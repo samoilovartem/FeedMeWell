@@ -2,7 +2,7 @@
 
 FeedMeWell is a bot for Telegram that will show a selection of restaurants/bars based on user`s criteria.
 
-### Main features (nust be done):
+### Main features (must be done):
 
 ##### 1. User-entered criteria:
 
