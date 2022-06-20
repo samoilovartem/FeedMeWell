@@ -21,29 +21,29 @@ def main():
             'user_city': [MessageHandler(Filters.text, get_user_budget)],
             'user_preferred_distance': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
-                MessageHandler(Filters.regex('^(0.5 km|1 km|2 km|3 km|4 km|5 km|Don`t use this option)$'),
+                MessageHandler(Filters.regex('^(0.5 km|1 km|2 km|3 km|4 km|5 km)$'),
                                get_user_budget),
             ],
             'user_budget': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
-                MessageHandler(Filters.regex('^(One step back)$'), get_user_preferred_distance),
                 MessageHandler(Filters.text, get_user_food_type),
             ],
             'user_food_type': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
-                MessageHandler(Filters.regex('^(One step back)$'), get_user_budget),
-                MessageHandler(Filters.regex('^(Don`t use this option)$'), get_user_rating_choice),
-                MessageHandler(Filters.regex(
-                    '^(Italian|Spanish|Japanese|German|Korean|Chinese|American|French|Mexican|Greek|'
-                    'Russian|Thai)$'), add_to_user_food_list),
+                MessageHandler(Filters.regex('^(One step back)$'), get_user_budget_back),
+                # MessageHandler(Filters.regex(
+                #     '^(Italian|Spanish|Japanese|German|Korean|Chinese|American|French|Mexican|Greek|'
+                #     'Russian|Thai)$'), add_to_user_food_list),
                 MessageHandler(Filters.regex('^(Submit)$'), get_user_rating_choice),
+                MessageHandler(Filters.text, add_to_user_food_list)
             ],
             'user_food_choice': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
                 MessageHandler(Filters.regex('^(One step back)$'), get_user_food_type),
-                MessageHandler(Filters.regex(
-                    '^(3.6|3.7|3.8|3.9|4.0|4.1|4.2|4.3|4.4|4.5|4.6|4.7|4.8|4.9|5.0'
-                    '|Don`t use this option)$'), get_user_recommendations),
+                # MessageHandler(Filters.regex(
+                #     '^(3.6|3.7|3.8|3.9|4.0|4.1|4.2|4.3|4.4|4.5|4.6|4.7|4.8|4.9|5.0)$'),
+                #     get_user_recommendations),
+                MessageHandler(Filters.text, get_user_recommendations)
             ],
             'user_recommendations': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
@@ -53,7 +53,8 @@ def main():
             ],
         },
         fallbacks=[
-
+            MessageHandler(Filters.photo | Filters.sticker | Filters.video | Filters.document,
+                           unknown_input)
         ],
     )
 
