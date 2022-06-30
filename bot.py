@@ -18,31 +18,26 @@ def main():
         states={
             'user_reply': [MessageHandler(Filters.text, get_user_location)],
             'user_location': [MessageHandler(Filters.location, get_user_preferred_distance)],
-            'user_city': [MessageHandler(Filters.text, get_user_budget)],
+            'user_city': [MessageHandler(Filters.text, get_user_price_category)],
             'user_preferred_distance': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
-                MessageHandler(Filters.regex('^(0.5 km|1 km|2 km|3 km|4 km|5 km)$'),
-                               get_user_budget),
+                MessageHandler(Filters.regex('^(0.2 km|0.5 km|1 km|2 km|3 km|4 km|5 km'
+                                             '|6 km|7 km|8 km|9 km)$'),
+                               get_user_price_category),
             ],
-            'user_budget': [
+            'user_price_category': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
                 MessageHandler(Filters.text, get_user_food_type),
             ],
             'user_food_type': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
-                MessageHandler(Filters.regex('^(One step back)$'), get_user_budget_back),
-                # MessageHandler(Filters.regex(
-                #     '^(Italian|Spanish|Japanese|German|Korean|Chinese|American|French|Mexican|Greek|'
-                #     'Russian|Thai)$'), add_to_user_food_list),
+                MessageHandler(Filters.regex('^(One step back)$'), get_user_price_category_back),
                 MessageHandler(Filters.regex('^(Submit)$'), get_user_rating_choice),
                 MessageHandler(Filters.text, add_to_user_food_list)
             ],
-            'user_food_choice': [
+            'user_restaurant_rating': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
-                MessageHandler(Filters.regex('^(One step back)$'), get_user_food_type),
-                # MessageHandler(Filters.regex(
-                #     '^(3.6|3.7|3.8|3.9|4.0|4.1|4.2|4.3|4.4|4.5|4.6|4.7|4.8|4.9|5.0)$'),
-                #     get_user_recommendations),
+                MessageHandler(Filters.regex('^(One step back)$'), get_user_food_type_back),
                 MessageHandler(Filters.text, get_user_recommendations)
             ],
             'user_recommendations': [

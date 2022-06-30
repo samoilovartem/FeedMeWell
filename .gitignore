@@ -133,3 +133,4 @@ dmypy.json
 .iml
 .xml
 settings.py
+.DS_Store

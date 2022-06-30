@@ -13,7 +13,8 @@ def yes_no_keyboard():
 def distance_keyboard():
     return ReplyKeyboardMarkup(
         [
-            ['0.5 km', '1 km', '2 km', '3 km', '4 km', '5 km'],
+            ['0.2 km', '0.5 km', '1 km', '2 km', '3 km', '4 km'],
+            ['5 km', '6 km', '7 km', '8 km', '9 km'],
             ['Start over']
         ], one_time_keyboard=True
     )
@@ -22,7 +23,9 @@ def distance_keyboard():
 def maximum_budget_keyboard():
     return ReplyKeyboardMarkup(
         [
-            ['500', '1500', '2000', '2500', '3000'],
+            ['Inexpensive (up to 550 PHP)'],
+            ['Moderately expensive - expensive (from 551 up to 3000 PHP)'],
+            ['Very Expensive (from 3001 up to 100000 PHP)'],
             ['Start over']
         ], one_time_keyboard=True
     )
@@ -31,9 +34,13 @@ def maximum_budget_keyboard():
 def food_type_keyboard():
     return ReplyKeyboardMarkup(
         [
-            ['Italian', 'Spanish', 'Japanese', 'German'],
-            ['Korean', 'Chinese', 'American', 'French'],
-            ['Mexican', 'Greek', 'Russian', 'Thai'],
+            ['Steakhouse', 'Grill', 'Bar', 'Wine Bar'],
+            ['Cafe', 'Pizza', 'Seafood', 'Sushi'],
+            ['European', 'Spanish', 'French', 'Italian'],
+            ['American', 'Mediterranean', 'Middle Eastern'],
+            ['International', 'Asian', 'Taiwanese'],
+            ['Chinese', 'Filipino', 'Japanese'],
+            ['Korean', 'Thai', 'Mexican', 'Latin'],
             ['One step back', 'Start over'],
             ['Submit']
         ], one_time_keyboard=False
@@ -43,9 +50,7 @@ def food_type_keyboard():
 def rating_keyboard():
     return ReplyKeyboardMarkup(
         [
-            ['3.6', '3.7', '3.8', '3.9', '4.0'],
-            ['4.1', '4.2', '4.3', '4.4', '4.5'],
-            ['4.6', '4.7', '4.8', '4.9', '5.0'],
+            ['3.0', '3.5', '4.0', '4.5', '5.0'],
             ['One step back', 'Start over'],
         ], one_time_keyboard=True
     )
