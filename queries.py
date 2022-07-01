@@ -1,19 +1,24 @@
 from db import db
 import pprint
 from pymongo.errors import BulkWriteError
+from random import choice
 
 
 def find_restaurants():
     try:
-        for doc in db.restaurants_manila.find(
+        result = list(db.restaurants_manila.find(
                 {"ranking_geo": {'$regex': "Taguig"},
-                 "rating": {'$gte': 4.5},
-                 'cuisine_list': {'$in': ['Spanish', 'European', 'Bar']},
+                 "rating": {'$gte': 4.0},
+                 'cuisine_list': {'$in': ['Spanish', 'Bar', 'Wine Bar']},
                  "price_category": {'$eq': 2},
                  }
-        ):
-            pprint.pprint(doc['ranking_geo'])
-            print('-' * 20)
+        ))
+        if result:
+            print('There is a result')
+            random_restaurant = choice(result)
+            pprint.pprint(random_restaurant['name'])
+        else:
+            print('No results')
     except BulkWriteError as bwe:
         print(bwe.details)
 
@@ -82,7 +87,7 @@ if __name__ == '__main__':
     #     {},
     #     [{'$set': {'cuisine_list': '$cuisine.name'}}]
     # )
-    find_restaurants()
+    # find_restaurants()
     # db.restaurants_manila.update_many(
     #     {'price_level': {'$exists': True, '$eq': '$$$$'}},
     #     [{'$set': {'price_category': 3}}]

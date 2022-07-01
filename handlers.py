@@ -2,7 +2,8 @@ from utils_keyboards import *
 from utils_functions import check_yes_or_no, check_city_or_distance, check_user_price_category
 from db import db, get_or_create_user, save_form
 from telegram.ext import ConversationHandler
-from bot_magic import do_magic_with_location, do_magic_with_city
+from bot_magic import do_magic_with_location, do_magic_with_city, do_magic_with_location_random, \
+    do_magic_with_city_random
 
 
 def start(update, context):
@@ -122,7 +123,10 @@ def send_random_one(update, context):
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
     save_form(db, user.get('user_id'), context.user_data.get('form'))
     user = get_or_create_user(db, update.effective_user, update.message.chat.id)
-    # do_magic(user, update)
+    if user['form'][-1]['allow_location'] == 'yes':
+        do_magic_with_location_random(user, update)
+    else:
+        do_magic_with_city_random(user, update)
     return ConversationHandler.END
 
 

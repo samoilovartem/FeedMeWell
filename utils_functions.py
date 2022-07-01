@@ -42,7 +42,8 @@ def check_city_or_distance(update, context, user_input):
 def check_user_price_category(update, context, user_input):
     price_categories_list = {'Inexpensive (up to 550 PHP)',
                              'Moderately expensive - expensive (from 551 up to 3000 PHP)',
-                             'Very Expensive (from 3001 up to 100000 PHP)'}
+                             'Very Expensive (from 3001 up to 100000 PHP)',
+                             'Include all price ranges'}
     if user_input in price_categories_list:
         if user_input == 'Inexpensive (up to 550 PHP)':
             context.user_data['form']['price_category'] = 1
@@ -50,6 +51,8 @@ def check_user_price_category(update, context, user_input):
             context.user_data['form']['price_category'] = 2
         elif user_input == 'Very Expensive (from 3001 up to 100000 PHP)':
             context.user_data['form']['price_category'] = 3
+        elif user_input == 'Include all price ranges':
+            context.user_data['form']['price_category'] = 0
         update.message.reply_text('Please choose types of cuisine you like (multiple choice)\n'
                                   'Once done, please use "submit" button on the keyboard',
                                   reply_markup=food_type_keyboard())

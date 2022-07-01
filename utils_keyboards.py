@@ -26,6 +26,7 @@ def maximum_budget_keyboard():
             ['Inexpensive (up to 550 PHP)'],
             ['Moderately expensive - expensive (from 551 up to 3000 PHP)'],
             ['Very Expensive (from 3001 up to 100000 PHP)'],
+            ['Include all price ranges'],
             ['Start over']
         ], one_time_keyboard=True
     )

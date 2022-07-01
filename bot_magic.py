@@ -1,53 +1,67 @@
-from db import db
-import pprint
 from pymongo.errors import BulkWriteError
-from telegram import ParseMode
+from random import choice, choices
+
+from bot_magic_utils import get_restaurants_with_location, get_restaurants_with_location_no_price, \
+    get_restaurants_with_city, get_restaurants_with_city_no_price, send_user_recommendations, \
+    check_if_price
 
 
 def do_magic_with_location(user, update):
-    try:
-        for doc in db.restaurants_manila.find(
-                {"location": {"$nearSphere": {"$geometry": {"type": "Point",
-                                                            "coordinates": user['form'][-1]['user_coordinates']},
-                                              "$maxDistance": user['form'][-1]['distance_for_recommendations'] * 1000}},
-                 "rating": {'$gte': user['form'][-1]['restaurant_rating']},
-                 'cuisine_list': {'$in': user['form'][-1]['cuisine_choice_list']},
-                 "price_category": {'$eq': user['form'][-1]['price_category']},
-                 }
-        ):
-            pprint.pprint(doc['name'])
-            if doc:
-                send_user_recommendations(update, doc)
-            else:
-                update.message.reply_text('Unfortunately, I didn`t find any restaurants that match your criteria\n'
-                                          'Please try to start again and change some filters')
-    except BulkWriteError as bwe:
-        print(bwe.details)
+    if check_if_price(user):
+        get_all_restaurants(user, update, get_restaurants_with_location)
+    else:
+        get_all_restaurants(user, update, get_restaurants_with_location_no_price)
 
 
 def do_magic_with_city(user, update):
+    if check_if_price(user):
+        get_all_restaurants(user, update, get_restaurants_with_city)
+    else:
+        get_all_restaurants(user, update, get_restaurants_with_city_no_price)
+
+
+def do_magic_with_location_random(user, update):
+    if check_if_price(user):
+        get_random_restaurant(user, update, get_restaurants_with_location)
+    else:
+        get_random_restaurant(user, update, get_restaurants_with_location_no_price)
+
+
+def do_magic_with_city_random(user, update):
+    if check_if_price(user):
+        get_random_restaurant(user, update, get_restaurants_with_city)
+    else:
+        get_random_restaurant(user, update, get_restaurants_with_city_no_price)
+
+
+def get_all_restaurants(user, update, function):
     try:
-        for doc in db.restaurants_manila.find(
-                {"ranking_geo": {'$regex': user['form'][-1]['user_city']},
-                 "rating": {'$gte': user['form'][-1]['restaurant_rating']},
-                 'cuisine_list': {'$in': user['form'][-1]['cuisine_choice_list']},
-                 "price_category": {'$eq': user['form'][-1]['price_category']},
-                 }
-        ):
-            pprint.pprint(doc['name'])
-            if doc:
-                send_user_recommendations(update, doc)
+        result = list(function(user))
+        if result:
+            result_length = len(result)
+            limit = 15
+            if result_length >= limit:
+                items = choices(result, k=limit)
+                for item in items:
+                    send_user_recommendations(update, item)
             else:
-                update.message.reply_text('Unfortunately, I didn`t find any restaurants that match your criteria\n'
-                                          'Please try to start again and change some filters')
+                for item in result:
+                    send_user_recommendations(update, item)
+        else:
+            update.message.reply_text('Unfortunately, I didn`t find any restaurants that match your criteria.\n'
+                                      'Please try to start again and change some filters')
     except BulkWriteError as bwe:
         print(bwe.details)
 
 
-def send_user_recommendations(update, doc):
-    update.message.reply_text(f"<b>Name:</b> {doc.get('name', None)}\n"
-                              f"<b>Address:</b> {doc.get('address', None)}\n"
-                              f"<b>Description:</b> \n{doc.get('description', None)}\n"
-                              f"<b>Website:</b> \n{doc.get('website', None)}\n"
-                              f"<b>Full info and reviews:</b> \n{doc.get('web_url', None)}\n",
-                              parse_mode=ParseMode.HTML)
+def get_random_restaurant(user, update, function):
+    try:
+        result = list(function(user))
+        if result:
+            item = choice(result)
+            send_user_recommendations(update, item)
+        else:
+            update.message.reply_text('Unfortunately, I didn`t find any restaurants that match your criteria.\n'
+                                      'Please try to start again and change some filters')
+    except BulkWriteError as bwe:
+        print(bwe.details)
