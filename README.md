@@ -2,17 +2,15 @@
 
 FeedMeWell is a bot for Telegram that will show a selection of restaurants/bars based on user`s criteria.
 
-### Main features (must be done):
+### Main features:
 
-##### 1. User-entered criteria:
+##### User-entered criteria (filters):
 
-- _Total bill not exceeding X USD for two people_
-- _Restaurant`s rating (based on visitors' reviews) no lower than X_
-- _Type of payment (card, cash and so on)_
-- _Type of cuisine (Asian, European and so on)_
-- _Location (no further than X km)_ 
-
-#### 2. Random choice of the restaurant but based on user`s criteria (if you want to add randomness to your boring life)
+- _**Location**_ (no further than X km from user`s location or an option to choose available city)
+- **_Price ranges_** (user can choose from 3 different price categories or include all restaurants)
+- **_Restaurant`s rating_** (no lower than X)
+- **_Type of cuisine_** (Multiple choice)
+- **_Output type_** (option to get a random restaurant or all recommendations(limited to 10))
 
 ### Additional features (can be done):
 
