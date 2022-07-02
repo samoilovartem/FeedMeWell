@@ -1,22 +1,43 @@
 from db import db
 import pprint
 from pymongo.errors import BulkWriteError
-from random import choice
+from random import choice, choices, sample
+
+query = {"location": {
+                    "$nearSphere": {
+                        "$geometry": {
+                            "type": "Point",
+                            "coordinates": [121.052249, 14.547731]
+                        },
+                        "$maxDistance": 2000}},
+                    "rating": {'$gte': 4.5},
+                    'cuisine_list': {'$in': ['Seafood', 'French', 'Spanish']},
+                    # "price_category": {'$eq': 2}
+                }
 
 
 def find_restaurants():
     try:
-        result = list(db.restaurants_manila.find(
-                {"ranking_geo": {'$regex': "Taguig"},
-                 "rating": {'$gte': 4.0},
-                 'cuisine_list': {'$in': ['Spanish', 'Bar', 'Wine Bar']},
-                 "price_category": {'$eq': 2},
-                 }
-        ))
+        result = list(db.restaurants_manila.find(query))
         if result:
+            result_length = len(result)
+            print(result_length)
+            limit = 10
             print('There is a result')
-            random_restaurant = choice(result)
-            pprint.pprint(random_restaurant['name'])
+            if result_length > limit:
+                random_items = sample(result, limit)
+                for item in random_items:
+                    pprint.pprint(item['name'])
+            else:
+                for item in result:
+                    pprint.pprint(item['name'])
+            # if result_length > limit:
+            #     random_items = choices(result, k=limit)
+            #     for item in random_items:
+            #         pprint.pprint(item['name'])
+            # else:
+            #     for item in result:
+            #         pprint.pprint(item['name'])
         else:
             print('No results')
     except BulkWriteError as bwe:
@@ -87,7 +108,7 @@ if __name__ == '__main__':
     #     {},
     #     [{'$set': {'cuisine_list': '$cuisine.name'}}]
     # )
-    # find_restaurants()
+    find_restaurants()
     # db.restaurants_manila.update_many(
     #     {'price_level': {'$exists': True, '$eq': '$$$$'}},
     #     [{'$set': {'price_category': 3}}]
