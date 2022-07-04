@@ -35,12 +35,31 @@ USER_EMOJI = [':smiley_cat:', ':smiling_imp:', ':panda_face:', ':dog:']
 
 MONGO_URI = 'Your MongoDB URI'
 MONGO_DB = 'Your MongoDB name'
+MONGO_DB_COLLECTION = 'Your MongoDB collection name'
 
 RAPID_API_URL = "Your Rapid API url"
 RAPID_API_KEY = "Your Rapid API key"
 RAPID_API_HOST = "Your Rapid API host"
 
 RESTAURANT_OUTPUT_LIMIT = 'Your output limit'
+
+AVAILABLE_CITIES = 'Your available cities (tuple)'
+
+PRICE_CATEGORIES = ('Inexpensive (up to 550 PHP)',
+                    'Moderately expensive - expensive (from 551 up to 3000 PHP)',
+                    'Very Expensive (from 3001 up to 100000 PHP)',
+                    'Include all price ranges')
+
+CUISINE = ('Steakhouse', 'Grill', 'Bar', 'Wine Bar',
+           'Cafe', 'Pizza', 'Seafood', 'Sushi',
+           'European', 'Spanish', 'French', 'Italian',
+           'American', 'Mediterranean', 'Middle Eastern',
+           'International', 'Asian', 'Taiwanese',
+           'Chinese', 'Filipino', 'Japanese',
+           'Korean', 'Thai', 'Mexican', 'Latin')  
+                    
+
+
 ```
 6. Go to "bot_files" directory
 7. Start the bot: `python bot.py`

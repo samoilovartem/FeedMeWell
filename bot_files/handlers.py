@@ -3,6 +3,7 @@ from utils_functions import check_yes_or_no, check_city_or_distance, check_user_
 from db import db, get_or_create_user, save_form
 from telegram.ext import ConversationHandler
 from queries_engine import process_user_form
+from settings import CUISINE
 
 
 def start(update, context):
@@ -10,7 +11,7 @@ def start(update, context):
     update.message.reply_text(
         f'Hello, {user.get("first_name")}! {user.get("emoji")}\n'
         f'Are you ready to share your location for better recommendations?\n'
-        f'(Press "No" if you are using desktop)',
+        f'(Press "Yes" ONLY if you are using mobile phone)',
         reply_markup=yes_no_keyboard())
     return 'user_reply'
 
@@ -18,7 +19,7 @@ def start(update, context):
 def get_user_location(update, context):
     user_reply = update.message.text.lower()
     context.user_data['form'] = {'allow_location': user_reply}
-    return check_yes_or_no(update, context, user_reply)
+    return check_yes_or_no(update, user_reply)
 
 
 def get_user_preferred_distance(update, context):
@@ -27,17 +28,13 @@ def get_user_preferred_distance(update, context):
         context.user_data['form']['user_coordinates'] = []
         context.user_data.get("form", {}).get('user_coordinates').append(user_coordinates['longitude'])
         context.user_data.get("form", {}).get('user_coordinates').append(user_coordinates['latitude'])
-    # Here we do something with user_coordinates
     update.message.reply_text('Please choose a distance to show recommendations (no further than that)',
                               reply_markup=distance_keyboard())
     return 'user_preferred_distance'
 
 
 def get_user_price_category(update, context):
-    # Here we can receive 2 possible options:
-    # 1. User`s chosen distance for recommendations
-    # 2. User`s input city
-    user_input = update.message.text
+    user_input = update.message.text.lower().capitalize()
     return check_city_or_distance(update, context, user_input)
 
 
@@ -63,14 +60,7 @@ def get_user_food_type_back(update, context):
 
 
 def add_to_user_food_list(update, context):
-    # Here we add all user`s choices into a list
-    cuisine_list = {'Steakhouse', 'Grill', 'Bar', 'Wine Bar',
-                    'Cafe', 'Pizza', 'Seafood', 'Sushi',
-                    'European', 'Spanish', 'French', 'Italian',
-                    'American', 'Mediterranean', 'Middle Eastern',
-                    'International', 'Asian', 'Taiwanese',
-                    'Chinese', 'Filipino', 'Japanese',
-                    'Korean', 'Thai', 'Mexican', 'Latin'}
+    cuisine_list = CUISINE
     user_input = update.message.text
     if user_input not in cuisine_list:
         update.message.reply_text('Please use keyboard`s data only!')
@@ -79,9 +69,6 @@ def add_to_user_food_list(update, context):
 
 
 def get_user_rating_choice(update, context):
-    # We check if user didn`t choose anything and pressed "Submit"
-    # Before adding cuisine_choice_list into DB we will make sure that there are no duplicates
-    # by using set and then list
     user_input = update.message.text
     if user_input == 'Submit' and not context.user_data.get("form", {}).get('cuisine_choice_list'):
         update.message.reply_text('You must choose something!')

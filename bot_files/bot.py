@@ -1,4 +1,4 @@
-from telegram.ext import Updater, MessageHandler, Filters
+from telegram.ext import Updater, MessageHandler, Filters, CommandHandler
 import logging
 import settings
 from handlers import *
@@ -17,8 +17,14 @@ def main():
         ],
         states={
             'user_reply': [MessageHandler(Filters.text, get_user_location)],
-            'user_location': [MessageHandler(Filters.location, get_user_preferred_distance)],
-            'user_city': [MessageHandler(Filters.text, get_user_price_category)],
+            'user_location': [
+                MessageHandler(Filters.regex('^(/start)$'), start),
+                MessageHandler(Filters.location, get_user_preferred_distance),
+            ],
+            'user_city': [
+                MessageHandler(Filters.regex('^(/start)$'), start),
+                MessageHandler(Filters.text, get_user_price_category)
+            ],
             'user_preferred_distance': [
                 MessageHandler(Filters.regex('^(Start over)$'), start),
                 MessageHandler(Filters.regex('^(0.2 km|0.5 km|1 km|2 km|3 km|4 km|5 km'

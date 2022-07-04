@@ -1,4 +1,5 @@
 from telegram import ReplyKeyboardMarkup, KeyboardButton
+from settings import PRICE_CATEGORIES
 
 
 def location_keyboard():
@@ -23,10 +24,10 @@ def distance_keyboard():
 def maximum_budget_keyboard():
     return ReplyKeyboardMarkup(
         [
-            ['Inexpensive (up to 550 PHP)'],
-            ['Moderately expensive - expensive (from 551 up to 3000 PHP)'],
-            ['Very Expensive (from 3001 up to 100000 PHP)'],
-            ['Include all price ranges'],
+            [PRICE_CATEGORIES[0]],
+            [PRICE_CATEGORIES[1]],
+            [PRICE_CATEGORIES[2]],
+            [PRICE_CATEGORIES[3]],
             ['Start over']
         ], one_time_keyboard=True
     )
@@ -62,5 +63,13 @@ def user_recommendations_keyboard():
         [
             ['All recommendations', 'Random one'],
             ['One step back', 'Start over'],
+        ], one_time_keyboard=True
+    )
+
+
+def one_more_keyboard():
+    return ReplyKeyboardMarkup(
+        [
+            ['Send one more', 'Enough'],
         ], one_time_keyboard=True
     )

@@ -1,4 +1,5 @@
 from telegram import ParseMode
+from telegram import ReplyKeyboardRemove
 
 
 def send_user_recommendations(update, item):
@@ -7,7 +8,8 @@ def send_user_recommendations(update, item):
                               f"<b>Description:</b> \n{item.get('description', None)}\n"
                               f"<b>Website:</b> \n{item.get('website', None)}\n"
                               f"<b>Full info and reviews:</b> \n{item.get('web_url', None)}\n",
-                              parse_mode=ParseMode.HTML)
+                              parse_mode=ParseMode.HTML,
+                              reply_markup=ReplyKeyboardRemove())
 
 
 def check_if_price(user):

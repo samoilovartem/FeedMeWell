@@ -1,24 +1,27 @@
 from db import db
 import pprint
 from pymongo.errors import BulkWriteError
-from random import choice, choices, sample
+from random import sample
+import settings
 
-query = {"location": {
-                    "$nearSphere": {
-                        "$geometry": {
-                            "type": "Point",
-                            "coordinates": [121.052249, 14.547731]
-                        },
-                        "$maxDistance": 2000}},
-                    "rating": {'$gte': 4.5},
-                    'cuisine_list': {'$in': ['Seafood', 'French', 'Spanish']},
-                    # "price_category": {'$eq': 2}
-                }
+query_location = {"location": {"$nearSphere": {"$geometry": {
+    "type": "Point",
+    "coordinates": [121.052249, 14.547731]
+},
+    "$maxDistance": 2000}},
+    "rating": {'$gte': 4.5},
+    'cuisine_list': {'$in': ['Seafood', 'French', 'Spanish']},
+}
+query_city = {"ranking_geo": {'$regex': 'Taguig'},
+              "rating": {'$gte': 4.5},
+              'cuisine_list': {'$in': ['Cafe', 'Seafood', 'Sushi', 'Italian', 'European']},
+              # "price_category": {'$eq': 0},
+              }
 
 
 def find_restaurants():
     try:
-        result = list(db.restaurants_manila.find(query))
+        result = list(db[settings.MONGO_DB_COLLECTION].find(query_city))
         if result:
             result_length = len(result)
             print(result_length)
@@ -31,13 +34,6 @@ def find_restaurants():
             else:
                 for item in result:
                     pprint.pprint(item['name'])
-            # if result_length > limit:
-            #     random_items = choices(result, k=limit)
-            #     for item in random_items:
-            #         pprint.pprint(item['name'])
-            # else:
-            #     for item in result:
-            #         pprint.pprint(item['name'])
         else:
             print('No results')
     except BulkWriteError as bwe:
@@ -47,20 +43,22 @@ def find_restaurants():
 def find_restaurants2():
     try:
         # db.restaurants_manila.create_index([("location", pymongo.GEOSPHERE)])
-        for doc in db.restaurants_manila.find(
+        for doc in db.restaurants_manila.find({
+            {'$match':
                 {"location": {
                     "$nearSphere": {
                         "$geometry": {
                             "type": "Point",
                             "coordinates": [121.052249, 14.547731]
                         },
-                        "$maxDistance": 3000}},
-                    "rating": {'$gte': 4.5},
+                        "$maxDistance": 2000}},
+                    "rating": {'$gte': 4},
                     'cuisine_list': {'$in': ['Spanish', 'European', 'Bar']},
-                    "price_category": {'$eq': 2}
-                }
-        ):
-            pprint.pprint(type(doc))
+                    "price_category": {'$eq': 2},
+                }},
+            {'$sample': {'size': settings.RESTAURANT_OUTPUT_LIMIT}},
+        }):
+            pprint.pprint(doc['name'])
             print('-' * 20)
     except BulkWriteError as bwe:
         print(bwe.details)
