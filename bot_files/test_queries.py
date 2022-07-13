@@ -15,7 +15,7 @@ query_location = {"location": {"$nearSphere": {"$geometry": {
 query_city = {"ranking_geo": {'$regex': 'Taguig'},
               "rating": {'$gte': 4.5},
               'cuisine_list': {'$in': ['Cafe', 'Seafood', 'Sushi', 'Italian', 'European']},
-              # "price_category": {'$eq': 0},
+              "price_category": 2,
               }
 
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     #     {},
     #     [{'$set': {'cuisine_list': '$cuisine.name'}}]
     # )
-    find_restaurants()
+    # find_restaurants()
     # db.restaurants_manila.update_many(
     #     {'price_level': {'$exists': True, '$eq': '$$$$'}},
     #     [{'$set': {'price_category': 3}}]

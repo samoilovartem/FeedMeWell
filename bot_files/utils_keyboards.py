@@ -21,7 +21,7 @@ def distance_keyboard():
     )
 
 
-def maximum_budget_keyboard():
+def price_category_keyboard():
     return ReplyKeyboardMarkup(
         [
             [PRICE_CATEGORIES[0]],

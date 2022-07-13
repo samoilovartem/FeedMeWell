@@ -20,22 +20,23 @@ def check_city_or_distance(update, context, user_input):
     available_cities = AVAILABLE_CITIES
     if user_input[0].isdigit():
         context.user_data['form']['distance_for_recommendations'] = int(user_input[0])
-        update.message.reply_text(
-            'Please set your maximum budget (local currency) on the keyboard or just send a number',
-            reply_markup=maximum_budget_keyboard())
-        return 'user_price_category'
+        return send_price_category_keyboard(update)
     else:
         if user_input in available_cities:
             context.user_data['form']['user_city'] = user_input
-            update.message.reply_text(
-                'Please set your maximum budget (local currency) on the keyboard or just send a number',
-                reply_markup=maximum_budget_keyboard())
-            return 'user_price_category'
+            return send_price_category_keyboard(update)
         else:
             update.message.reply_text(f'Unfortunately, I don`t know that city\n'
-                                      'Known cities are:\n'
+                                      'Available cities are:\n'
                                       'Taguig, Pasay, Makati, Manila, Quezon City, '
                                       'Mandaluyong, Pasig, Paranaque, Las Pinas')
+
+
+def send_price_category_keyboard(update):
+    update.message.reply_text(
+        'Please choose a price category on the keyboard',
+        reply_markup=price_category_keyboard())
+    return 'user_price_category'
 
 
 def check_user_price_category(update, context, user_input):

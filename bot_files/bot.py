@@ -60,8 +60,9 @@ def main():
     )
 
     dp.add_handler(main_script)
-    dp.add_handler(MessageHandler(Filters.location, get_user_location))
-
+    dp.add_handler(MessageHandler(Filters.text | Filters.photo | Filters.sticker |
+                                  Filters.video | Filters.document | Filters.location,
+                                  unknown_input_outside_of_script))
     logging.info('The bot has started')
     mybot.start_polling()
     mybot.idle()

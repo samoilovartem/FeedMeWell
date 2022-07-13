@@ -40,8 +40,8 @@ def get_user_price_category(update, context):
 
 def get_user_price_category_back(update, context):
     update.message.reply_text(
-        'Please choose a restaurant`s price range on the keyboard',
-        reply_markup=maximum_budget_keyboard())
+        'Please choose a price category on the keyboard',
+        reply_markup=price_category_keyboard())
     return 'user_price_category'
 
 
@@ -111,3 +111,8 @@ def send_random_one(update, context):
 def unknown_input(update, context):
     update.message.reply_text('Unfortunately, I don`t understand you :(\n'
                               'Please try to follow the instructions')
+
+
+def unknown_input_outside_of_script(update, context):
+    update.message.reply_text('To begin using bot, please use /start command')
+
