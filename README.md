@@ -43,7 +43,7 @@ RAPID_API_HOST = "Your Rapid API host"
 
 RESTAURANT_OUTPUT_LIMIT = 'Your output limit'
 
-AVAILABLE_CITIES = 'Your available cities (tuple)'
+AVAILABLE_CITIES = 'Your available cities (set)'
 
 PRICE_CATEGORIES = ('Inexpensive (up to 550 PHP)',
                     'Moderately expensive - expensive (from 551 up to 3000 PHP)',
