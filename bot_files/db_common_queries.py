@@ -1,5 +1,4 @@
 import pymongo
-
 from db import db
 import pprint
 from pymongo.errors import BulkWriteError
@@ -44,7 +43,6 @@ def find_restaurants():
 
 def find_restaurants2():
     try:
-        # db.restaurants_manila.create_index([("location", pymongo.GEOSPHERE)])
         for doc in db.restaurants_manila.find({
             {'$match':
                 {"location": {
@@ -66,14 +64,14 @@ def find_restaurants2():
         print(bwe.details)
 
 
-def find_bad_objects_based_on_field_and_value(collection_name, field, value):
+def find_objects_based_on_field_and_value(collection_name, field, value):
     for num, item in enumerate(db[collection_name].find({field: value})):
         print(num, item['name'])
 
 
-def delete_bad_objects():
-    db.restaurants_batangas.delete_many(
-        {'latitude': None}
+def delete_documents_that_have_field_and_value(collection_name, field, value):
+    db[collection_name].delete_many(
+        {field: value}
     )
 
 
@@ -84,20 +82,11 @@ def from_string_to_float(collection_name, field):
     )
 
 
-def delete_fields(collection_name):
-    fields_to_delete = ['doubleclick_zone', 'preferred_map_engine', 'ranking_geo_id',
-                        'ranking_denominator', 'ranking_category', 'distance', 'distance_string',
-                        'bearing', 'is_closed', 'open_now_text', 'is_long_closed',
-                        'parent_display_name', 'is_jfy_enabled', 'nearest_metro_station', 'hours',
-                        'is_candidate_for_contact_info_suppression', 'gb_distance', 'establishment_types',
-                        'awards', 'category', 'subcategory', 'write_review']
+def delete_fields(collection_name, list_of_fields):
     query = {'$unset': {'parent_display_name': 1}}
-    for field in fields_to_delete:
+    for field in list_of_fields:
         query['$unset'][field] = 1
-    db[collection_name].update_many(
-        {},
-        query,
-    )
+    db[collection_name].update_many({}, query)
 
 
 def create_location(collection_name):
@@ -111,10 +100,10 @@ def create_geo_index(collection_name):
     db[collection_name].create_index([("location", pymongo.GEOSPHERE)])
 
 
-def create_field_based_on_other_fields(collection_name, new_field, ref_field):
+def create_field_based_on_other_fields(collection_name, new_field, ref_field, nested_field):
     db[collection_name].update_many(
         {},
-        [{'$set': {new_field: f'${ref_field}.name'}}]
+        [{'$set': {new_field: f'${ref_field}.{nested_field}'}}]
     )
 
 
@@ -130,31 +119,34 @@ def create_price_category_based_on_price_level(collection_name, price_symbols, p
     )
 
 
+def process_raw_data_script(collection_name):
+    delete_documents_that_have_field_and_value(collection_name, 'latitude', None)
+    print('"Bad" documents have been deleted or not found')
+    delete_fields(collection_name, fields_to_delete)
+    print('Unnecessary fields have been successfully deleted')
+    from_string_to_float(collection_name, 'latitude')
+    from_string_to_float(collection_name, 'longitude')
+    from_string_to_float(collection_name, 'rating')
+    print('Values of "latitude", "longitude" and "rating" have been transformed into a float')
+    create_location(collection_name)
+    print('Field "Location" has been successfully created')
+    create_geo_index(collection_name)
+    print('GEO indexes have been created')
+    create_field_based_on_other_fields(collection_name, 'cuisine_list', 'cuisine', 'name')
+    print('Field "cuisine_list" has been successfully created')
+    create_price_category_based_on_price_level(collection_name, '$', 1)
+    create_price_category_based_on_price_level(collection_name, '$$ - $$$', 2)
+    create_price_category_based_on_price_level(collection_name, '$$$$', 3)
+    print('All 3 price categories have been successfully created')
+
+
+fields_to_delete = ['doubleclick_zone', 'preferred_map_engine', 'ranking_geo_id',
+                    'ranking_denominator', 'ranking_category', 'distance', 'distance_string',
+                    'bearing', 'is_closed', 'open_now_text', 'is_long_closed',
+                    'parent_display_name', 'is_jfy_enabled', 'nearest_metro_station', 'hours',
+                    'is_candidate_for_contact_info_suppression', 'gb_distance', 'establishment_types',
+                    'awards', 'category', 'subcategory', 'write_review']
+
+
 if __name__ == '__main__':
-    """This query creates a new field using existing fields` values as a reference"""
-    # db.restaurants.update_many(
-    #     {},
-    #     [{'$set': {'approximate_price': '$price_level'}}])
-    """This query creates a new field using existing fields` values inside a nested dict and list 
-    as a reference"""
-    # db.restaurants_manila.update_many(
-    #     {},
-    #     [{'$set': {'cuisine_list': '$cuisine.name'}}]
-    # )
-    # find_restaurants()
-    # for item in db.restaurants_batangas.find({'name': 'Casa Marikit'}):
-    #     pprint.pprint(item['ranking_geo'])
-    #     print('-' * 50)
-    # for num, item in enumerate(db.restaurants_manila.find({'price_range': {'$eq': [0, 550]}})):
-    #     print(num, item['name'])
-    #     print('-' * 50)
-    # from_string_to_float('restaurants_batangas', 'longitude')
-    # delete_fields('restaurants_batangas')
-    # find_bad_objects_based_on_field('restaurants_batangas', 'price_level')
-    # create_location('restaurants_batangas')
-    # create_geo_index('restaurants_batangas')
-    # create_field_based_on_other_fields('restaurants_batangas', 'cuisine_list', 'cuisine')
-    # find_all_values_of_particular_field('restaurants_batangas', 'price_level')
-    # create_price_category_based_on_price_level('restaurants_batangas', '$$$$', 3)
-
-
+    process_raw_data_script('restaurants_spb')
