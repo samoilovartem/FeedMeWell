@@ -1,10 +1,12 @@
-from telegram import ReplyKeyboardMarkup, KeyboardButton
 from settings import PRICE_CATEGORIES
+from telegram import KeyboardButton, ReplyKeyboardMarkup
 
 
 def location_keyboard():
-    return ReplyKeyboardMarkup([[KeyboardButton('Send my location', request_location=True)]],
-                               one_time_keyboard=True)
+    return ReplyKeyboardMarkup(
+        [[KeyboardButton('Send my location', request_location=True)]],
+        one_time_keyboard=True,
+    )
 
 
 def yes_no_keyboard():
@@ -16,8 +18,9 @@ def distance_keyboard():
         [
             ['0.2 km', '0.5 km', '1 km', '2 km', '3 km', '4 km'],
             ['5 km', '6 km', '7 km', '8 km', '9 km'],
-            ['Start over']
-        ], one_time_keyboard=True
+            ['Start over'],
+        ],
+        one_time_keyboard=True,
     )
 
 
@@ -28,8 +31,9 @@ def price_category_keyboard():
             [PRICE_CATEGORIES[1]],
             [PRICE_CATEGORIES[2]],
             [PRICE_CATEGORIES[3]],
-            ['Start over']
-        ], one_time_keyboard=True
+            ['Start over'],
+        ],
+        one_time_keyboard=True,
     )
 
 
@@ -44,8 +48,9 @@ def food_type_keyboard():
             ['Chinese', 'Filipino', 'Japanese'],
             ['Korean', 'Thai', 'Mexican', 'Latin'],
             ['One step back', 'Start over'],
-            ['Submit']
-        ], one_time_keyboard=False
+            ['Submit'],
+        ],
+        one_time_keyboard=False,
     )
 
 
@@ -54,7 +59,8 @@ def rating_keyboard():
         [
             ['3.0', '3.5', '4.0', '4.5', '5.0'],
             ['One step back', 'Start over'],
-        ], one_time_keyboard=True
+        ],
+        one_time_keyboard=True,
     )
 
 
@@ -63,7 +69,8 @@ def user_recommendations_keyboard():
         [
             ['All recommendations', 'Random one'],
             ['One step back', 'Start over'],
-        ], one_time_keyboard=True
+        ],
+        one_time_keyboard=True,
     )
 
 
@@ -71,5 +78,6 @@ def one_more_keyboard():
     return ReplyKeyboardMarkup(
         [
             ['Send one more', 'Enough'],
-        ], one_time_keyboard=True
+        ],
+        one_time_keyboard=True,
     )

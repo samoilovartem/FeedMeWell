@@ -1,14 +1,18 @@
-from pymongo import MongoClient
-from random import choice
+import os
 from datetime import datetime
-from emoji import emojize
-import settings
+from random import choice
+
 import certifi
+from dotenv import find_dotenv, load_dotenv
+from emoji import emojize
+from pymongo import MongoClient
+from settings import USER_EMOJI
 
+load_dotenv(find_dotenv())
 
-client = MongoClient(settings.MONGO_URI, tlsCAFile=certifi.where())
+client = MongoClient(os.environ.get('MONGO_URI'), tlsCAFile=certifi.where())
 
-db = client[settings.MONGO_DB]
+db = client[os.environ.get('MONGO_DB')]
 
 
 def get_or_create_user(db, effective_user, chat_id):
@@ -20,7 +24,7 @@ def get_or_create_user(db, effective_user, chat_id):
             "last_name": effective_user.last_name,
             "username": effective_user.username,
             "chat_id": chat_id,
-            "emoji": emojize(choice(settings.USER_EMOJI), use_aliases=True)
+            "emoji": emojize(choice(USER_EMOJI), use_aliases=True),
         }
         db.users.insert_one(user)
     return user

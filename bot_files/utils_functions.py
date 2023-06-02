@@ -1,12 +1,15 @@
-from utils_keyboards import *
 from settings import AVAILABLE_CITIES, PRICE_CATEGORIES
+from utils_keyboards import (
+    food_type_keyboard,
+    location_keyboard,
+    price_category_keyboard,
+)
 
 
 def check_yes_or_no(update, user_reply):
     if user_reply == 'yes':
         update.message.reply_text(
-            f'Please send your location',
-            reply_markup=location_keyboard()
+            'Please send your location', reply_markup=location_keyboard()
         )
         return 'user_location'
     elif user_reply == 'no':
@@ -26,16 +29,19 @@ def check_city_or_distance(update, context, user_input):
             context.user_data['form']['user_city'] = user_input
             return send_price_category_keyboard(update)
         else:
-            update.message.reply_text(f'Unfortunately, I don`t know that city\n'
-                                      'Available cities are:\n'
-                                      'Taguig, Pasay, Makati, Manila, Quezon City, '
-                                      'Mandaluyong, Pasig, Paranaque, Las Pinas')
+            update.message.reply_text(
+                'Unfortunately, I don`t know that city\n'
+                'Available cities are:\n'
+                'Taguig, Pasay, Makati, Manila, Quezon City, '
+                'Mandaluyong, Pasig, Paranaque, Las Pinas'
+            )
 
 
 def send_price_category_keyboard(update):
     update.message.reply_text(
         'Please choose a price category on the keyboard',
-        reply_markup=price_category_keyboard())
+        reply_markup=price_category_keyboard(),
+    )
     return 'user_price_category'
 
 
@@ -50,9 +56,11 @@ def check_user_price_category(update, context, user_input):
             context.user_data['form']['price_category'] = 3
         else:
             context.user_data['form']['price_category'] = 0
-        update.message.reply_text('Please choose types of cuisine you like (multiple choice)\n'
-                                  'Once done, please use "submit" button on the keyboard',
-                                  reply_markup=food_type_keyboard())
+        update.message.reply_text(
+            'Please choose types of cuisine you like (multiple choice)\n'
+            'Once done, please use "submit" button on the keyboard',
+            reply_markup=food_type_keyboard(),
+        )
         return 'user_food_type'
     else:
         update.message.reply_text('Please use keyboard`s data only!')

@@ -15,14 +15,14 @@ FeedMeWell is a bot for Telegram that will show a selection of restaurants/bars 
 ### Additional features (can be done):
 
 1. Expanded criteria (type of music played at the restaurant, portion size)
-2. Ability to reserve a table 
+2. Ability to reserve a table
 3. Adding web applications to bot (since Bot API 6.0)
 4. Ability to add reviews with photos
 5. Lifehacks and user`s advices (e.g.: book a table X, don't book a table Y, etc.)
 
 ### To be continued...
 
-### Installation 
+### Installation
 
 1. Clone the repository from GitHub
 2. Create a virtual environment
@@ -56,14 +56,10 @@ CUISINE = ('Steakhouse', 'Grill', 'Bar', 'Wine Bar',
            'American', 'Mediterranean', 'Middle Eastern',
            'International', 'Asian', 'Taiwanese',
            'Chinese', 'Filipino', 'Japanese',
-           'Korean', 'Thai', 'Mexican', 'Latin')  
-                    
+           'Korean', 'Thai', 'Mexican', 'Latin')
+
 
 
 ```
 6. Go to "bot_files" directory
 7. Start the bot: `python bot.py`
-
-
-
-

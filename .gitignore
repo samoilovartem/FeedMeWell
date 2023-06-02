@@ -132,5 +132,4 @@ dmypy.json
 .idea
 .iml
 .xml
-bot_files/settings.py
 .DS_Store
