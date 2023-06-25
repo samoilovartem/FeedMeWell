@@ -1,6 +1,6 @@
+from config import config
 from db import db, get_or_create_user, save_form
 from queries_engine import process_user_form
-from settings import CUISINE
 from telegram.ext import ConversationHandler
 from utils_functions import (
     check_city_or_distance,
@@ -38,10 +38,10 @@ def get_user_preferred_distance(update, context):
     user_coordinates = update.message.location
     if user_coordinates:
         context.user_data['form']['user_coordinates'] = []
-        context.user_data.get("form", {}).get('user_coordinates').append(
+        context.user_data.get('form', {}).get('user_coordinates').append(
             user_coordinates['longitude']
         )
-        context.user_data.get("form", {}).get('user_coordinates').append(
+        context.user_data.get('form', {}).get('user_coordinates').append(
             user_coordinates['latitude']
         )
     update.message.reply_text(
@@ -66,12 +66,12 @@ def get_user_price_category_back(update, context):
 
 def get_user_food_type(update, context):
     user_input = update.message.text
-    context.user_data["form"]['cuisine_choice_list'] = []
+    context.user_data['form']['cuisine_choice_list'] = []
     return check_user_price_category(update, context, user_input)
 
 
 def get_user_food_type_back(update, context):
-    context.user_data["form"]['cuisine_choice_list'] = []
+    context.user_data['form']['cuisine_choice_list'] = []
     update.message.reply_text(
         'Please choose types of cuisine you like (multiple choice)\n'
         'Once done, please use "submit" button on the keyboard',
@@ -81,25 +81,24 @@ def get_user_food_type_back(update, context):
 
 
 def add_to_user_food_list(update, context):
-    cuisine_list = CUISINE
     user_input = update.message.text
-    if user_input not in cuisine_list:
+    if user_input not in config.bot_config.cuisine:
         update.message.reply_text('Please use keyboard`s data only!')
     else:
-        context.user_data.get("form", {}).get('cuisine_choice_list').append(
+        context.user_data.get('form', {}).get('cuisine_choice_list').append(
             update.message.text
         )
 
 
 def get_user_rating_choice(update, context):
     user_input = update.message.text
-    if user_input == 'Submit' and not context.user_data.get("form", {}).get(
+    if user_input == 'Submit' and not context.user_data.get('form', {}).get(
         'cuisine_choice_list'
     ):
         update.message.reply_text('You must choose something!')
         return 'user_food_type'
-    context.user_data["form"]['cuisine_choice_list'] = list(
-        set(context.user_data["form"]['cuisine_choice_list'])
+    context.user_data['form']['cuisine_choice_list'] = list(
+        set(context.user_data['form']['cuisine_choice_list'])
     )
     update.message.reply_text(
         'Please choose a restaurant`s rating (no lower that that)',
@@ -118,8 +117,8 @@ def get_user_recommendations(update, context):
             reply_markup=user_recommendations_keyboard(),
         )
         return 'user_recommendations'
-    else:
-        update.message.reply_text('Please use keyboard`s data only!')
+
+    update.message.reply_text('Please use keyboard`s data only!')
 
 
 def send_all_recommendations(update, context):

@@ -1,40 +1,38 @@
-import os
-
 import requests
-import settings
+from config import config
 from db import db
-from dotenv import find_dotenv, load_dotenv
-
-load_dotenv(find_dotenv())
 
 headers = {
-    "X-RapidAPI-Key": os.environ.get('RAPID_API_KEY'),
-    "X-RapidAPI-Host": os.environ.get('RAPID_API_HOST'),
+    'X-RapidAPI-Key': config.rapid_api_config.api_key,
+    'X-RapidAPI-Host': config.rapid_api_config.api_host,
 }
 
 
 def get_data(db, amount, location_id, currency):
     querystring = {
-        "location_id": f'{location_id}',
-        "restaurant_tagcategory": f'{location_id}',
-        "restaurant_tagcategory_standalone": "10591",
-        "currency": currency,
-        "lunit": "km",
-        "limit": "30",
-        "min_rating": "3",
-        "open_now": "false",
-        "offset": "0",
-        "lang": "en_US",
+        'location_id': f'{location_id}',
+        'restaurant_tagcategory': f'{location_id}',
+        'restaurant_tagcategory_standalone': '10591',
+        'currency': currency,
+        'lunit': 'km',
+        'limit': '30',
+        'min_rating': '3',
+        'open_now': 'false',
+        'offset': '0',
+        'lang': 'en_US',
     }
     offset = 0
     for _ in range(amount):
         try:
             response = requests.request(
-                "GET", settings.RAPID_API_URL, headers=headers, params=querystring
+                method='GET',
+                url=config.rapid_api_config.api_url,
+                headers=headers,
+                params=querystring,
             )
             result = response.json()
             db.restaurants_spb.insert_many(result['data'])
-            querystring["offset"] = str(offset + 30)
+            querystring['offset'] = str(offset + 30)
             offset += 30
         except requests.exceptions.JSONDecodeError:
             continue

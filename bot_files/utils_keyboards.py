@@ -1,4 +1,4 @@
-from settings import PRICE_CATEGORIES
+from config import config
 from telegram import KeyboardButton, ReplyKeyboardMarkup
 
 
@@ -27,10 +27,10 @@ def distance_keyboard():
 def price_category_keyboard():
     return ReplyKeyboardMarkup(
         [
-            [PRICE_CATEGORIES[0]],
-            [PRICE_CATEGORIES[1]],
-            [PRICE_CATEGORIES[2]],
-            [PRICE_CATEGORIES[3]],
+            [config.bot_config.price_categories.get(1)],
+            [config.bot_config.price_categories.get(2)],
+            [config.bot_config.price_categories.get(3)],
+            [config.bot_config.price_categories.get(4)],
             ['Start over'],
         ],
         one_time_keyboard=True,

@@ -1,12 +1,9 @@
-import os
 from random import choice, sample
 
+from config import config
 from db import db, get_or_create_user
-from dotenv import find_dotenv, load_dotenv
 from queries_engine_utils import check_if_price, send_user_recommendations
 from telegram import ReplyKeyboardRemove
-
-load_dotenv(find_dotenv())
 
 
 def process_user_form(update):
@@ -41,10 +38,10 @@ def find_restaurants_with_location(user):
         'cuisine_list': {'$in': user['form'][-1]['cuisine_choice_list']},
     }
     if check_if_price(user):
-        query["price_category"] = user['form'][-1]['price_category']
-        result = db[os.environ.get('MONGO_DB_COLLECTION')].find(query)
+        query['price_category'] = user['form'][-1]['price_category']
+        result = db[config.mongo_db_config.db_collection_name].find(query)
     else:
-        result = db[os.environ.get('MONGO_DB_COLLECTION')].find(query)
+        result = db[config.mongo_db_config.db_collection_name].find(query)
     return result
 
 
@@ -56,9 +53,9 @@ def find_restaurants_with_city(user):
     }
     if check_if_price(user):
         query["price_category"] = user['form'][-1]['price_category']
-        result = db[os.environ.get('MONGO_DB_COLLECTION')].find(query)
+        result = db[config.mongo_db_config.db_collection_name].find(query)
     else:
-        result = db[os.environ.get('MONGO_DB_COLLECTION')].find(query)
+        result = db[config.mongo_db_config.db_collection_name].find(query)
     return result
 
 
@@ -66,7 +63,7 @@ def send_all_restaurants(update, result):
     result = list(result)
     if result:
         result_length = len(result)
-        limit = int(os.environ.get('RESTAURANT_OUTPUT_LIMIT'))
+        limit = int(config.restaurant_output_limit)
         if result_length > limit:
             random_items = sample(result, limit)
             for item in random_items:

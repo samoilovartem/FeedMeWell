@@ -11,7 +11,7 @@ from pymongo.errors import BulkWriteError
 load_dotenv(find_dotenv())
 
 client = MongoClient(os.environ.get('MONGO_URI'), tlsCAFile=certifi.where())
-db = client[os.environ.get('MONGO_DB')]
+db = client[os.environ.get('MONGO_DB_NAME')]
 
 query_location = {
     "location": {
@@ -33,7 +33,7 @@ query_city = {
 
 def find_restaurants():
     try:
-        result = list(db[os.environ.get('MONGO_DB_COLLECTION')].find(query_city))
+        result = list(db[os.environ.get('MONGO_DB_COLLECTION_NAME')].find(query_city))
         if result:
             result_length = len(result)
             logger.info(result_length)

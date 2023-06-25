@@ -1,7 +1,4 @@
-import logging
-import os
-
-from dotenv import find_dotenv, load_dotenv
+from config import config
 from handlers import (
     ConversationHandler,
     add_to_user_food_list,
@@ -19,15 +16,14 @@ from handlers import (
     unknown_input,
     unknown_input_outside_of_script,
 )
+from loguru import logger
 from telegram.ext import Filters, MessageHandler, Updater
 
-load_dotenv(find_dotenv())
-
-logging.basicConfig(filename='bot.log', level=logging.INFO)
+logger.add('bot.log', format='{time} {level} {message}', level='INFO')
 
 
 def main():
-    mybot = Updater(os.environ.get('BOT_API_KEY'), use_context=True)
+    mybot = Updater(token=config.bot_config.api_Key, use_context=True)
 
     dp = mybot.dispatcher
 
@@ -103,7 +99,7 @@ def main():
             unknown_input_outside_of_script,
         )
     )
-    logging.info('The bot has started')
+    logger.info('The bot has started')
     mybot.start_polling()
     mybot.idle()
 

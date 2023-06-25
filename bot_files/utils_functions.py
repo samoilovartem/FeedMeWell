@@ -1,4 +1,4 @@
-from settings import AVAILABLE_CITIES, PRICE_CATEGORIES
+from config import config
 from utils_keyboards import (
     food_type_keyboard,
     location_keyboard,
@@ -15,26 +15,24 @@ def check_yes_or_no(update, user_reply):
     elif user_reply == 'no':
         update.message.reply_text('Please type your city`s name then')
         return 'user_city'
-    else:
-        update.message.reply_text('Please answer "Yes" or "No" only')
+    update.message.reply_text('Please answer "Yes" or "No" only')
 
 
 def check_city_or_distance(update, context, user_input):
-    available_cities = AVAILABLE_CITIES
     if user_input[0].isdigit():
         context.user_data['form']['distance_for_recommendations'] = int(user_input[0])
         return send_price_category_keyboard(update)
-    else:
-        if user_input in available_cities:
-            context.user_data['form']['user_city'] = user_input
-            return send_price_category_keyboard(update)
-        else:
-            update.message.reply_text(
-                'Unfortunately, I don`t know that city\n'
-                'Available cities are:\n'
-                'Taguig, Pasay, Makati, Manila, Quezon City, '
-                'Mandaluyong, Pasig, Paranaque, Las Pinas'
-            )
+
+    if user_input in config.bot_config.available_cities:
+        context.user_data['form']['user_city'] = user_input
+        return send_price_category_keyboard(update)
+
+    update.message.reply_text(
+        'Unfortunately, I don`t know that city\n'
+        'Available cities are:\n'
+        'Taguig, Pasay, Makati, Manila, Quezon City, '
+        'Mandaluyong, Pasig, Paranaque, Las Pinas'
+    )
 
 
 def send_price_category_keyboard(update):
@@ -46,21 +44,21 @@ def send_price_category_keyboard(update):
 
 
 def check_user_price_category(update, context, user_input):
-    price_categories = PRICE_CATEGORIES
-    if user_input in price_categories:
-        if user_input == price_categories[0]:
-            context.user_data['form']['price_category'] = 1
-        elif user_input == price_categories[1]:
-            context.user_data['form']['price_category'] = 2
-        elif user_input == price_categories[2]:
-            context.user_data['form']['price_category'] = 3
-        else:
-            context.user_data['form']['price_category'] = 0
-        update.message.reply_text(
-            'Please choose types of cuisine you like (multiple choice)\n'
-            'Once done, please use "submit" button on the keyboard',
-            reply_markup=food_type_keyboard(),
-        )
-        return 'user_food_type'
-    else:
+    if user_input not in config.bot_config.price_categories.values():
         update.message.reply_text('Please use keyboard`s data only!')
+
+    if user_input == config.bot_config.price_categories.get(1):
+        context.user_data['form']['price_category'] = 1
+    elif user_input == config.bot_config.price_categories.get(2):
+        context.user_data['form']['price_category'] = 2
+    elif user_input == config.bot_config.price_categories.get(3):
+        context.user_data['form']['price_category'] = 3
+    else:
+        context.user_data['form']['price_category'] = 0
+
+    update.message.reply_text(
+        'Please choose types of cuisine you like (multiple choice)\n'
+        'Once done, please use "submit" button on the keyboard',
+        reply_markup=food_type_keyboard(),
+    )
+    return 'user_food_type'
