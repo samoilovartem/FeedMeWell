@@ -23,8 +23,8 @@ FeedMeWell is a bot for Telegram that will show a selection of restaurants/bars 
 BOT_API_KEY = 'Your telegram API key'
 
 MONGO_URI = 'Your MongoDB URI'
-MONGO_DB = 'Your MongoDB name'
-MONGO_DB_COLLECTION = 'Your MongoDB collection name'
+MONGO_DB_NAME = 'Your MongoDB name'
+MONGO_DB_COLLECTION_NAME = 'Your MongoDB collection name'
 
 RAPID_API_URL = "Your Rapid API url"
 RAPID_API_KEY = "Your Rapid API key"
